@@ -1,5 +1,5 @@
   main = ".open-next/worker.js"
-  name = "grades-calculator"
+  name = "grade-calculator"
   compatibility_date = "2026-01-26"
   compatibility_flags = ["nodejs_compat"]
   [assets]
