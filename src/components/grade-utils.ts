@@ -11,7 +11,7 @@ export type OutstandingRequirement = {
   assessmentId: string;
   assessmentName: string;
   taskId: string;
-  taskName: string;
+  taskName: string | null;
   totalMarks: number;
   requiredPercent: number | null;
   requiredMarks: number | null;
@@ -168,8 +168,8 @@ export function getOverallStatus(modules: ModuleConfig[], grades: GradeMap) {
   let hasNoData = false;
   let hasGood = false;
 
-  for (const module of modules) {
-    const status = getModuleStatus(module, grades);
+  for (const mod of modules) {
+    const status = getModuleStatus(mod, grades);
     if (status === "bad") return "bad";
     if (status === "warn") hasWarn = true;
     if (status === "nodata") hasNoData = true;
@@ -195,8 +195,8 @@ export function computeOverallPercent(modules: ModuleConfig[], grades: GradeMap)
 
 export function getAllAssessmentIds() {
   const ids: string[] = [];
-  for (const module of efyModules) {
-    for (const assessment of module.assessments) {
+  for (const mod of efyModules) {
+    for (const assessment of mod.assessments) {
       if (assessment.subtasks && assessment.subtasks.length > 0) {
         ids.push(...assessment.subtasks.map((task) => task.id));
       } else {
@@ -423,26 +423,26 @@ export function getOutstandingRequirements(
   const outstanding: OutstandingRequirement[] = [];
   const mathTotals: Record<string, number> = {};
 
-  for (const module of modules) {
-    for (const task of getModuleTasks(module)) {
+  for (const mod of modules) {
+    for (const task of getModuleTasks(mod)) {
       if (task.id === MATH_A_ID || task.id === MATH_B_ID) {
         mathTotals[task.id] = task.totalMarks;
       }
     }
   }
 
-  for (const module of modules) {
-    const tasks = getModuleTasks(module);
+  for (const mod of modules) {
+    const tasks = getModuleTasks(mod);
     const missingTasks = tasks.filter((task) => getTaskPercent(task, grades) === null);
     if (missingTasks.length === 0) continue;
 
-    if (module.passRule.type === "maths") {
+    if (mod.passRule.type === "maths") {
       for (const task of missingTasks) {
-        const result = getMathRequirement(task.id, grades, module.passRule, mathTotals);
+        const result = getMathRequirement(task.id, grades, mod.passRule, mathTotals);
 
         outstanding.push({
-          moduleId: module.id,
-          moduleName: module.name,
+          moduleId: mod.id,
+          moduleName: mod.name,
           assessmentId: task.assessmentId,
           assessmentName: task.assessmentName,
           taskId: task.id,
@@ -457,7 +457,7 @@ export function getOutstandingRequirements(
       continue;
     }
 
-    const moduleRequirement = getThresholdRequirement(module.passRule.threshold, tasks, grades);
+    const moduleRequirement = getThresholdRequirement(mod.passRule.threshold, tasks, grades);
 
     for (const task of missingTasks) {
       const requiredPercent = moduleRequirement.requiredPercent;
@@ -467,8 +467,8 @@ export function getOutstandingRequirements(
           : null;
 
       outstanding.push({
-        moduleId: module.id,
-        moduleName: module.name,
+        moduleId: mod.id,
+        moduleName: mod.name,
         assessmentId: task.assessmentId,
         assessmentName: task.assessmentName,
         taskId: task.id,
