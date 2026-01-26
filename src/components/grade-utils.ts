@@ -195,6 +195,7 @@ export function computeOverallPercent(modules: ModuleConfig[], grades: GradeMap)
 
 export function getAllAssessmentIds() {
   const ids: string[] = [];
+
   for (const mod of efyModules) {
     for (const assessment of mod.assessments) {
       if (assessment.subtasks && assessment.subtasks.length > 0) {
@@ -431,6 +432,7 @@ export function getOutstandingRequirements(
     }
   }
 
+
   for (const mod of modules) {
     const tasks = getModuleTasks(mod);
     const missingTasks = tasks.filter((task) => getTaskPercent(task, grades) === null);
@@ -456,6 +458,7 @@ export function getOutstandingRequirements(
       }
       continue;
     }
+
 
     const moduleRequirement = getThresholdRequirement(mod.passRule.threshold, tasks, grades);
 
