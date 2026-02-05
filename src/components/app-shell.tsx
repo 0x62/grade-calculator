@@ -12,7 +12,7 @@ import {
   SidebarSection,
 } from "./catalyst/sidebar";
 import { GradeProvider } from "./grade-context";
-import { Heading, Subheading } from "./catalyst/heading";
+import { Subheading } from "./catalyst/heading";
 
 const navItems = [
   { href: "/", label: "Dashboard" },
