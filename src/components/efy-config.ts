@@ -200,7 +200,7 @@ export const efyModules: ModuleConfig[] = [
         subtasks: [
           { id: "coursework-python-test-1", name: "Test 1", weight: 4, totalMarks: 10 },
           { id: "coursework-python-test-2", name: "Test 2", weight: 4, totalMarks: 15 },
-          { id: "coursework-python-test-3", name: "Test 3", weight: 4, totalMarks: 100 },
+          { id: "coursework-python-test-3", name: "Test 3", weight: 4, totalMarks: 15 },
         ],
       },
       {
