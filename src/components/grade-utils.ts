@@ -139,16 +139,29 @@ export function getModuleStatus(module: ModuleConfig, grades: GradeMap): StatusT
 
   if (module.passRule.type === "maths") {
     const { mathsA, mathsB, average } = computeMathStats(grades);
-    const hasA = mathsA !== null;
-    const hasB = mathsB !== null;
 
-    if (average === null) return "warn";
+    if (mathsA !== null && mathsB !== null) {
+      if (average === null) return "bad";
+      if (average < module.passRule.averageThreshold) return "bad";
+      if (mathsB < module.passRule.mathsBThreshold) return "bad";
+      return "good";
+    }
 
-    if (average < module.passRule.averageThreshold) return "bad";
-    if (hasB && mathsB < module.passRule.mathsBThreshold) return "bad";
+    if (mathsA !== null) {
+      const requiredMathsB = Math.max(
+        module.passRule.mathsBThreshold,
+        module.passRule.averageThreshold * 2 - mathsA,
+      );
+      return requiredMathsB <= 100 ? "good" : "bad";
+    }
 
-    if (hasA && hasB) return "good";
-    return "warn";
+    if (mathsB !== null) {
+      if (mathsB < module.passRule.mathsBThreshold) return "bad";
+      const requiredMathsA = module.passRule.averageThreshold * 2 - mathsB;
+      return requiredMathsA <= 100 ? "good" : "bad";
+    }
+
+    return "nodata";
   }
 
   if (percent === null) return "warn";
